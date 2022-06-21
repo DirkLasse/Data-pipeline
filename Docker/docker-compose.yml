@@ -1,0 +1,40 @@
+version: '3'
+services:
+  tweets_colector:
+    build: twitter_py/
+    volumes:
+    - ./twitter_py:/app
+    depends_on:
+    - mongodb
+  mongodb:
+    image: mongo
+    ports:
+    - 27017:27017
+  etl:
+    build: etl_py/
+    volumes:
+    - ./etl_py:/app
+    depends_on:
+    - mongodb
+    - mypg
+    - tweets_colector
+  mypg:
+    image: postgres
+    ports:
+    - 5555:5432 #mapping 5555 from my localhost to 5432 in the container
+    environment:
+    - POSTGRES_USER=postgres
+    - POSTGRES_PASSWORD=postgres
+  metabase:
+    image: metabase/metabase
+    ports:
+    - 3000:3000
+    #environment:
+    #  MB_DB_TYPE: postgres
+    #  MB_DB_DBNAME: postgres
+    #  MB_DB_PORT: 5432
+    #  MB_DB_USER: postgres
+    #  MB_DB_PASS: postgres
+    #  MB_DB_HOST: mypg
+    depends_on:
+    - mypg
