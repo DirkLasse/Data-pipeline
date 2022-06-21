@@ -3,7 +3,7 @@ import pandas as pd
 import pymongo
 import logging
 from sqlalchemy import text, create_engine, inspect
-from credentials import PASSWORD
+from credential import PASSWORD
 import re
 from time import sleep
 
